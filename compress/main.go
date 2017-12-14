@@ -1,10 +1,10 @@
 package main
 
 import (
-	"compress/flate"
+	"bytes"
+	"compress/lzw"
 	"encoding/base64"
 	"fmt"
-	"os"
 )
 
 func main() {
@@ -49,10 +49,11 @@ func p(t []byte, w io.Writer, o bool) {
 `)
 
 	for i := 0; i <= 9; i++ {
-		fmt.Printf("============\n[")
 		//o := lzw.NewWriter(ascii85.NewEncoder(os.Stdout), lzw.LSB, i)
-		//o := lzw.NewWriter(base64.NewEncoder(base64.RawStdEncoding, os.Stdout), lzw.LSB, i)
-		o, err := flate.NewWriter(base64.NewEncoder(base64.RawStdEncoding, os.Stdout), i)
+		var err error
+		buf := &bytes.Buffer{}
+		o := lzw.NewWriter(base64.NewEncoder(base64.RawStdEncoding, buf), lzw.LSB, i)
+		//o, err := flate.NewWriter(base64.NewEncoder(base64.RawStdEncoding, buf), i)
 		if err != nil {
 			fmt.Printf("NERR: %v", err)
 		}
@@ -61,6 +62,8 @@ func p(t []byte, w io.Writer, o bool) {
 			fmt.Printf("ERR: %v", err)
 		}
 		o.Close()
-		fmt.Printf("]\n============\n")
+		fmt.Printf("============\n[")
+		fmt.Printf("%s", buf.Bytes())
+		fmt.Printf("]%v, %v\n============\n", len(t), len(buf.Bytes()))
 	}
 }
