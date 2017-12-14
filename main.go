@@ -19,11 +19,11 @@ type B []byte
 
 func main() {
 	t := B(X)
-	p(t, os.Stdout, 1)
+	p(t, os.Stdout, 2)
 }
-func p(t B, w io.Writer, o int) {
+func p(t B, w io.Writer, o byte) {
 	for _, b := range t {
-		if o > 0 && b == 88 {
+		if o+b == 90 {
 			w.Write(B{96})
 			p(t, w, 0)
 			w.Write(B{96})
@@ -33,11 +33,11 @@ func p(t B, w io.Writer, o int) {
 	}
 }
 `)
-	p(t, os.Stdout, 1)
+	p(t, os.Stdout, 2)
 }
-func p(t B, w io.Writer, o int) {
+func p(t B, w io.Writer, o byte) {
 	for _, b := range t {
-		if o > 0 && b == 88 {
+		if o+b == 90 {
 			w.Write(B{96})
 			p(t, w, 0)
 			w.Write(B{96})
